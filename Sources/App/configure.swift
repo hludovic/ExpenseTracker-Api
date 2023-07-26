@@ -19,6 +19,9 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(CreateTodo())
     app.migrations.add(CreateCategory())
     app.migrations.add(CreateAccount())
+    app.migrations.add(CreateExpense())
+
+    try await app.autoMigrate()
 
     // Start migration
 
