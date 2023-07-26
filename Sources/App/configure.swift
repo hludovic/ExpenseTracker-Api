@@ -18,9 +18,9 @@ public func configure(_ app: Application) async throws {
     ), as: .psql)
     app.migrations.add(CreateTodo())
     app.migrations.add(CreateCategory())
+    app.migrations.add(CreateAccount())
 
     // Start migration
-    try await app.autoMigrate()
 
     // register routes
     try routes(app)
