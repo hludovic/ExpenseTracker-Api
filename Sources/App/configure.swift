@@ -20,6 +20,7 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(CreateCategory())
     app.migrations.add(CreateAccount())
     app.migrations.add(CreateExpense())
+    app.migrations.add(CreateIncome())
 
     try await app.autoMigrate()
 
