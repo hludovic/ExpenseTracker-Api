@@ -37,7 +37,7 @@ final class Expense: Model, Content {
     init(id: UUID? = nil,
          categoryID: Category.IDValue,
          accountID: Account.IDValue,
-         description: String?,
+         description: String? = nil,
          date: Date,
          amount: Int,
          currency: String) {
