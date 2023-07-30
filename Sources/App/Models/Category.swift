@@ -22,7 +22,7 @@ final class Category: Model, Content {
     @Field(key: "name")
     var name: String
 
-    @Enum(key: "category_type")
+    @Enum(key: "type")
     var type: CategoryType
 
     @Field(key: "isArchived")
