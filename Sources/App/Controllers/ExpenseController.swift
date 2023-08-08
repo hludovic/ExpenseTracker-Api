@@ -13,7 +13,7 @@ struct ExpenseController: RouteCollection {
         let expenses = routes.grouped("expenses")
         expenses.get(use: index)
         expenses.post(use: create)
-        expenses.put(use: update)
+        expenses.patch(use: update)
         expenses.delete(":expenseID", use: delete)
     }
 
@@ -28,15 +28,25 @@ struct ExpenseController: RouteCollection {
     }
 
     func update(req: Request) async throws -> HTTPStatus {
-        let expense = try req.content.decode(Expense.self)
-        guard let expenseFromDB = try await Expense.find(expense.id, on: req.db) else {
+        let patchExpense = try req.content.decode(PatchExpense.self)
+        guard let expenseFromDB = try await Expense.find(patchExpense.id, on: req.db) else {
             throw Abort(.notFound)
         }
-        expenseFromDB.$account.id = expense.$account.id
-        expenseFromDB.description = expense.description
-        expenseFromDB.amount = expense.amount
-        expenseFromDB.currency = expense.currency
-        expenseFromDB.date = expense.date
+        if let accountID = patchExpense.accountID {
+            expenseFromDB.$account.id = accountID
+        }
+        if let categoryID = patchExpense.categoryID {
+            expenseFromDB.$category.id = categoryID
+        }
+        if let description = patchExpense.description {
+            expenseFromDB.description = description
+        }
+        if let amount = patchExpense.amount {
+            expenseFromDB.amount = amount
+        }
+        if let date = patchExpense.date {
+            expenseFromDB.date = date
+        }
         try await expenseFromDB.update(on: req.db)
         return .ok
     }
