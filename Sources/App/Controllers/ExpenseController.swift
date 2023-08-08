@@ -32,7 +32,7 @@ struct ExpenseController: RouteCollection {
         guard let expenseFromDB = try await Expense.find(expense.id, on: req.db) else {
             throw Abort(.notFound)
         }
-        expenseFromDB.account = expense.account
+        expenseFromDB.$account.id = expense.$account.id
         expenseFromDB.description = expense.description
         expenseFromDB.amount = expense.amount
         expenseFromDB.currency = expense.currency
