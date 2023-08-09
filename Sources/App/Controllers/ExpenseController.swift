@@ -27,7 +27,7 @@ struct ExpenseController: RouteCollection {
         return expense
     }
 
-    func update(req: Request) async throws -> HTTPStatus {
+    func update(req: Request) async throws -> Expense {
         let patchExpense = try req.content.decode(PatchExpense.self)
         guard let expenseFromDB = try await Expense.find(patchExpense.id, on: req.db) else {
             throw Abort(.notFound)
@@ -48,7 +48,7 @@ struct ExpenseController: RouteCollection {
             expenseFromDB.date = date
         }
         try await expenseFromDB.update(on: req.db)
-        return .ok
+        return expenseFromDB
     }
 
     func delete(req: Request) async throws -> HTTPStatus {
