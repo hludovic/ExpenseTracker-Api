@@ -13,7 +13,7 @@ struct CategoryController: RouteCollection {
         let categories = routes.grouped("categories")
         categories.get(use: index)
         categories.post(use: create)
-        categories.put(use: update)
+        categories.patch(use: update)
         categories.put(":categoryID", use: archive)
     }
 
@@ -39,14 +39,18 @@ struct CategoryController: RouteCollection {
         return .ok
     }
 
-    func update(req: Request) async throws -> HTTPStatus {
-        let category = try req.content.decode(Category.self)
-        guard let categoryFromDB = try await Category.find(category.id, on: req.db) else {
+    func update(req: Request) async throws -> Category {
+        let patchCategory = try req.content.decode(PatchCategory.self)
+        guard let categoryFromDB = try await Category.find(patchCategory.id, on: req.db) else {
             throw Abort(.notFound)
         }
-        categoryFromDB.name = category.name
-        categoryFromDB.type = category.type
+        if let name = patchCategory.name {
+            categoryFromDB.name = name
+        }
+        if let type = patchCategory.type {
+            categoryFromDB.type = type
+        }
         try await categoryFromDB.update(on: req.db)
-        return .ok
+        return categoryFromDB
     }
 }
